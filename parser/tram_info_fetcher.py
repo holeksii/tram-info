@@ -1,9 +1,9 @@
 import asyncio
 import aiohttp
 import json
-from typing import List, Mapping, Tuple
+from typing import List, Mapping, Set, Tuple
 
-from schemas import StopSchema, TramRouteSchema, RouteSchemaEncoder
+from schemas import StopSchema, StopSchemaEncoder, TramRouteSchema, RouteSchemaEncoder
 
 
 API_URL = "https://api.lad.lviv.ua/"
@@ -49,6 +49,10 @@ async def parse_tram_info(data: Mapping) -> TramRouteSchema:
     return TramRouteSchema(short_name, long_name, stops[1], stops[0])
 
 
+def parse_stop_info(data: TramRouteSchema) -> Set[StopSchema]:
+    return set(data.direct_stops + data.reverse_stops)
+
+
 async def get_tram_info(tram_code: str) -> TramRouteSchema:
     info = await fetch_tram_info(tram_code)
     return await parse_tram_info(info)
@@ -61,11 +65,28 @@ def tram_info_to_file(path: str, tram_route_schema: TramRouteSchema) -> None:
         )
 
 
+def tram_stops_to_file(path: str, stops: Set[StopSchema]) -> None:
+    with open(path, "w", encoding="UTF-8") as f:
+        json.dump(
+            sorted(stops, key=lambda stop: stop.name),
+            f,
+            cls=StopSchemaEncoder,
+            indent=4,
+            ensure_ascii=False,
+        )
+
+
 async def main():
     codes = read_tram_codes()
     trams_info = await asyncio.gather(
         *(get_tram_info(code) for code in codes),
     )
+
+    stops = set()
+    for tram_info in trams_info:
+        stops |= parse_stop_info(tram_info)
+
+    tram_stops_to_file(DATA_PATH + "tram_stops.json", stops)
 
     for tram_info in trams_info:
         tram_info_to_file(DATA_PATH + f"{tram_info.short_name}.json", tram_info)

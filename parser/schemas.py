@@ -14,6 +14,16 @@ class StopSchema:
     def __str__(self) -> str:
         return f"StopSchema(name={self.name}, location={self.location})"
 
+    def __eq__(self, __value: object) -> bool:
+        return (
+            isinstance(__value, StopSchema)
+            and self.name == __value.name
+            and self.location == __value.location
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.name, self.location))
+
 
 class RouteSchema:
     def __init__(
@@ -39,6 +49,27 @@ class RouteSchema:
     reverse_stops={self.reverse_stops}
 )
 """
+
+    def __eq__(self, __value: object) -> bool:
+        return (
+            isinstance(__value, RouteSchema)
+            and self.type == __value.type
+            and self.short_name == __value.short_name
+            and self.long_name == __value.long_name
+            and self.direct_stops == __value.direct_stops
+            and self.reverse_stops == __value.reverse_stops
+        )
+
+    def __hash__(self) -> int:
+        return hash(
+            (
+                self.type,
+                self.short_name,
+                self.long_name,
+                tuple(self.direct_stops),
+                tuple(self.reverse_stops),
+            )
+        )
 
 
 class TramRouteSchema(RouteSchema):
