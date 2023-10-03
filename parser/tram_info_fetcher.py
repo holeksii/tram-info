@@ -82,14 +82,14 @@ async def main():
         *(get_tram_info(code) for code in codes),
     )
 
-    stops = set()
-    for tram_info in trams_info:
-        stops |= parse_stop_info(tram_info)
+    # stops = set()
+    # for tram_info in trams_info:
+    #     stops |= parse_stop_info(tram_info)
 
-    tram_stops_to_file(DATA_PATH + "tram_stops.json", stops)
+    # tram_stops_to_file(DATA_PATH + "tram_stops.json", stops)
 
-    for tram_info in trams_info:
-        tram_info_to_file(DATA_PATH + f"{tram_info.short_name}.json", tram_info)
+    # for tram_info in trams_info:
+    tram_info_to_file(DATA_PATH + "trams_info.json", trams_info)
 
 
 if __name__ == "__main__":
