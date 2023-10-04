@@ -93,7 +93,7 @@ def routes(stop_name1, stop_name2, data):
 
 # к-ть зупинок одним шляхом
 def stops_count(route):
-    count = 0 
+    count = 0
     for part in route:
         count += len(part["stops"])
     return count
@@ -157,31 +157,87 @@ def shortest_route_request(data, stops_names):
 # вивід номерів трамваїв, що їдуть на задану зупинку
 def trams_for_stop_request(data, stops_names):
     print("Введіть назву зупинки:")
-    #...
+
+    stop_name = stop_input(stops_names)
+
+    trams = trams_for_stop(stop_name, data)
+
+    if not trams:
+        print(f"На зупинку '{stop_name}' не їздять трамваї.")
+    else:
+        print(f"Трамваї, що їдуть на зупинку '{stop_name}':")
+        for tram in trams:
+            print(tram["short_name"])
+
+
 
 
 # вивід так чи ні якщо заданий номер трамвая має задану зупинку
 def tram_has_stop_request(data, stops_names):
-    print()
-    #...
+    print("Введіть номер трамвая:")
+
+    tram_data = tram_by_name(data)
+
+    print("Введіть назву зупинки:")
+
+    stop_name = stop_input(stops_names)
+
+    if tram_has_stop(tram_data, stop_name):
+        print(f"Так, трамвай {tram_data['short_name']} має зупинки '{stop_name}'.")
+    else:
+        print(f"Ні, трамвай {tram_data['short_name']} не має зупинки '{stop_name}'.")
 
 
-# вивід можливих зупинок для пересадки між двома заданими зупинками
-def tram_change_stops_request(data, stops_names):
-    print()
-    #...
+
+# вивід можливих зупинок для пересадки між двома заданими трамваями
+def tram_change_stops_request(data):
+    print("Введіть номер першого трамвая:")
+
+    tram1_data = tram_by_name(data)
+
+    print("Введіть номер другого трамвая:")
+
+    tram2_data = tram_by_name(data)
+
+    change_stops = tram_change_stops(tram1_data, tram2_data)
+
+    if not change_stops:
+        print(f"Немає можливих зупинок для пересадки між трамваями {tram1_data['short_name']} та {tram2_data['short_name']}.")
+    else:
+        print(f"Можливі зупинки для пересадки між трамваями {tram1_data['short_name']} та {tram2_data['short_name']}:")
+        for stop in change_stops:
+            print(stop)
 
 
 # вивід всіх зупинок заданого трамвая
 def all_tram_stops_request(data, stops_names):
-    print()
-    #...
+    print("Введіть номер трамвая:")
+
+    tram_data = tram_by_name(data)
+
+    print(f"Зупинки для трамвая {tram_data['short_name']}:")
+
+    for stop in all_direct_stops_names(tram_data):
+        print(stop)
+
+    for stop in all_reverse_stops_names(tram_data):
+        print(stop)
 
 
 # так чи ні, якщо потрібна пересадка між двома заданими зупинками
 def tram_change_neeeded_request(data, stops_names):
-    print()
-    #...
+    print("Введіть початкову зупинку: ")
+    stop_name1 = stop_input(stops_names)
+    print("Введіть кінцеву зупинку:")
+    stop_name2 = stop_input(stops_names)
+
+    change_needed = tram_change_needed(stop_name1, stop_name2, data)
+
+    if change_needed:
+        print(f"Так, потрібна пересадка між зупинками '{stop_name1}' та '{stop_name2}'.")
+    else:
+        print(f"Ні, пересадка не потрібна між зупинками '{stop_name1}' та '{stop_name2}'.")
+
 
 
 # Меню:----------------------------------------------------------------------------
@@ -193,7 +249,7 @@ options={
     "5":all_tram_stops_request,
     "6":tram_change_neeeded_request,
     "0":0
-    }   
+    }
 
 def choice_input():
     choice=input()
@@ -217,11 +273,11 @@ def menu():
 
 
 if __name__ == "__main__":
-    s = read_data("data/trams_stops.json")
+    s = read_data("data/tram_stops.json")
     d = read_data("data/trams_info.json")
     _stops = all_stops_from_json(s)
+    tram_change_neeeded_request(d, _stops)
     choice = menu()
     while choice!='0':
         options[choice](d, _stops)
         choice = menu()
-
