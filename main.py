@@ -109,7 +109,7 @@ def shortest_route(stop_name1, stop_name2, data):
         if count < min_stops_count:
             min_stops_count = count
             index = i
-    return _routes[i]
+    return _routes[index]
 
 
 # чи потрібна пересадка
@@ -140,8 +140,8 @@ def tram_by_name(data):
 # вивід знайденого шляху
 def route_output(route):
     for part in route:
-        print(f'\nСядьте на трамвай {part["tram"]} та' /
-        f'проїдьте до зупинки {part["stops"][-1]}. Тут потрібно вийти')
+        print(f'\nСядьте на трамвай {part["tram"]} та ' \
+        f'проїдьте до зупинки {part["stops"][-1]}. Тут потрібно вийти.')
 
 
 # вивід найкоротшого шляху за заданими двома зупинками
@@ -183,14 +183,14 @@ def tram_has_stop_request(data, stops_names):
     stop_name = stop_input(stops_names)
 
     if tram_has_stop(tram_data, stop_name):
-        print(f"Так, трамвай {tram_data['short_name']} має зупинки '{stop_name}'.")
+        print(f"Так, трамвай {tram_data['short_name']} має зупинку '{stop_name}'.")
     else:
         print(f"Ні, трамвай {tram_data['short_name']} не має зупинки '{stop_name}'.")
 
 
 
 # вивід можливих зупинок для пересадки між двома заданими трамваями
-def tram_change_stops_request(data):
+def tram_change_stops_request(data, stops_names):
     print("Введіть номер першого трамвая:")
 
     tram1_data = tram_by_name(data)
