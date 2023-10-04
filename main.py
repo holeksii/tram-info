@@ -255,20 +255,20 @@ def choice_input():
     choice=input()
     is_valid = choice in options
     while is_valid==False:
-        print("The symbol is inwalid! \n Enter one of the symbols suggested above:")
+        print("Ви ввели неправильний символ! \n Введіть один з символів, запропонованих вище:")
         choice=input()
         is_valid = choice in options
     return choice
 
 def menu():
-    print("\n Enter 1 if you want to ,")
-    print("enter 2 if you want to ,")
-    print("enter 3 if you want to ,")
-    print("enter 4 if you want to ,")
-    print("enter 5 if you want to ,")
-    print("enter 6 if you want to ,")
-    print("enter 0 if you want to exit program:")
-    choice= choice_input()
+    print("\n Введіть 1, якщо ви хочете дізнатися найкоротший шлях за заданими двома зупинками.")
+    print("Введіть 2, якщо ви хочете дізнатися номери трамваїв, що їдуть на задану зупинку.")
+    print("Введіть 3, якщо ви хочете перевірити, чи має заданий трамвай задану зупинку.")
+    print("Введіть 4, якщо ви хочете знати можливі зупинки для пересадки між трамваями.")
+    print("Введіть 5, якщо ви хочете дізнатися всі зупинки для заданого трамвая.")
+    print("Введіть 6, якщо ви хочете перевірити, чи потрібна пересадка між двома заданими зупинками.")
+    print("Введіть 0, якщо ви хочете вийти з програми.")
+    choice = choice_input()
     return choice
 
 
@@ -276,7 +276,6 @@ if __name__ == "__main__":
     s = read_data("data/tram_stops.json")
     d = read_data("data/trams_info.json")
     _stops = all_stops_from_json(s)
-    tram_change_neeeded_request(d, _stops)
     choice = menu()
     while choice!='0':
         options[choice](d, _stops)
